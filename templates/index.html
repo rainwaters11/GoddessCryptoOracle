@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goddess Crypto Oracle Bot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Import Three.js -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="blockchain-viz" class="blockchain-viz"></div>
+    <div class="container">
+        <header>
+            <div class="oracle-image-container">
+                <img src="{{ url_for('static', filename='goddessbot.jpg') }}" alt="Goddess Oracle" class="oracle-image">
+            </div>
+            <h1>Goddess Crypto Oracle</h1>
+            <p class="subtitle">Divine Wisdom for the Web3 Age</p>
+        </header>
+
+        <section class="prophecy-section">
+            <h2>🔮 Recent Prophecies</h2>
+            <div class="prophecy-container">
+                {% for prophecy in prophecies %}
+                <div class="prophecy-card" data-timestamp="{{ prophecy.created_at }}">
+                    <p class="prophecy-text">{{ prophecy.text }}</p>
+                    <span class="prophecy-date">{{ prophecy.created_at }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="instructions">
+            <h2>✨ Summon the Oracle</h2>
+            <div class="instruction-card">
+                <ol>
+                    <li>Add the Goddess Oracle to your Discord server</li>
+                    <li>Type <code>!prophecy</code> in any channel</li>
+                    <li>Receive divine insights about Web3's future</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            <p>Built for the NEAR Hackathon 2025 • Absurd Agents Track</p>
+            <div class="social-links">
+                <a href="https://github.com/yourusername/goddess-oracle" target="_blank">GitHub</a>
+                <a href="https://discord.gg/yourinvite" target="_blank">Join Discord</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Initialize blockchain visualization -->
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                console.log('Initializing BlockchainViz...');
+
+                const container = document.getElementById('blockchain-viz');
+                if (!container) {
+                    console.error('Could not find blockchain-viz container');
+                    return;
+                }
+
+                // Dynamic import of BlockchainViz
+                const { default: BlockchainViz } = await import('/static/js/blockchain-viz.js');
+                const viz = new BlockchainViz(container);
+
+                // Add existing prophecies to visualization
+                document.querySelectorAll('.prophecy-card').forEach(card => {
+                    viz.addProphecy({
+                        created_at: card.dataset.timestamp
+                    });
+                });
+
+                console.log('BlockchainViz initialization complete');
+            } catch (error) {
+                console.error('Error initializing BlockchainViz:', error);
+            }
+        });
+    </script>
+</body>
+</html>

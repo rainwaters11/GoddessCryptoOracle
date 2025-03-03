@@ -1,0 +1,19 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@assemblyscript/loader": "^0.27.34",
+    "asbuild": "^0.2.0",
+    "near-sdk-as": "^3.2.3",
+    "postprocessing": "^6.36.7",
+    "three": "^0.174.0"
+  }
+}

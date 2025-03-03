@@ -1,0 +1,36 @@
+### Enhancement: Interactive and Customizable Responses for Goddess Crypto Oracle
+
+**Objective:**  
+- Enhance the bot so that after displaying an initial prophecy, users can ask follow-up questions for additional insights.
+- Allow users to specify a theme (e.g., DeFi, NFTs, governance) when invoking the prophecy command, so that the response aligns with their interests.
+
+**Requirements:**
+
+1. **Interactive Responses:**  
+   - After the bot responds to the `!prophecy` command, enable it to listen for follow-up commands (e.g., `!insight` or `!detail`) that trigger additional context or deeper explanations related to the initial prophecy.  
+   - Implement context tracking so that the follow-up relates to the previously generated prophecy.
+
+2. **Customization Options:**  
+   - Modify the `!prophecy` command to accept an optional parameter for the theme, for example:  
+     ```
+     !prophecy DeFi
+     ```
+   - Based on the specified theme (DeFi, NFTs, governance, etc.), adjust the generated prophecy to better reflect that topic.  
+   - Provide a default prophecy if no theme is provided.
+
+**Implementation Guidelines:**  
+- **Discord Bot Code:**  
+  - Update your command handler to parse additional parameters after `!prophecy`.  
+  - Create a mapping of themes to specific prophecy content or modify the logic to dynamically incorporate theme keywords.
+
+- **Context Handling:**  
+  - After an initial prophecy is sent, store the prophecy context (e.g., in memory or a temporary object) so that when a follow-up command is issued, the bot can reference it to provide additional insights.
+
+- **User Feedback:**  
+  - Ensure that when a follow-up command is issued, the bot responds with a clear, context-aware message that adds value and depth to the initial prediction.
+
+**Expected Outcome:**  
+- A more engaging user experience where users not only receive a mystical prediction but can also interact with the bot for further insights.  
+- Customizable prophecies that align with user-selected themes, enhancing relevance and personalization.
+
+Please update the code accordingly to integrate these interactive and customizable features into Goddess Crypto Oracle.

@@ -1,0 +1,26 @@
+{
+  "name": "near_contract",
+  "version": "1.0.0",
+  "description": "NEAR smart contract for prophecy storage",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "asbuild:debug": "asc assembly/index.ts --target debug",
+    "asbuild:release": "asc assembly/index.ts --target release",
+    "asbuild": "npm run asbuild:debug && npm run asbuild:release"
+  },
+  "dependencies": {
+    "near-sdk-as": "^3.2.3"
+  },
+  "devDependencies": {
+    "@assemblyscript/loader": "^0.19.23",
+    "asbuild": "^0.2.0"
+  },
+  "keywords": [
+    "near",
+    "blockchain",
+    "smart-contract"
+  ],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+*.log
+prophecies.json
+.DS_Store
+node_modules/

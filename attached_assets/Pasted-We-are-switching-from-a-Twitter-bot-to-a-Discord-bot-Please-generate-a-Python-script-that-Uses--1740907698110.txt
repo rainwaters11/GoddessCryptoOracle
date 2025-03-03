@@ -1,0 +1,79 @@
+We are switching from a Twitter bot to a Discord bot.
+Please generate a Python script that:*
+✅ Uses OpenAI's GPT-4 API to generate Web3 prophecies.
+✅ Posts an AI-generated prophecy to a Discord server every few hours.
+✅ Responds to users when they type !prophecy.
+✅ Runs continuously on Replit.
+✅ Stores API keys securely in a .env file."*
+
+🛠 Step 2: Modify the Replit-Generated Code (If Needed)
+1️⃣ If Replit generates a Twitter bot again, stop it and clarify:
+"We are not using Twitter anymore. Please make it a Discord bot."
+
+2️⃣ If Replit misses a feature (like auto-posting prophecies), add it manually.
+
+📌 You can also copy and paste this improved version:
+
+python
+Copy
+Edit
+import discord
+import openai
+import os
+import asyncio
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Initialize OpenAI API
+openai.api_key = OPENAI_API_KEY
+
+# Define bot intents
+intents = discord.Intents.default()
+intents.messages = True
+
+# Create Discord bot client
+client = discord.Client(intents=intents)
+
+# Function to generate AI prophecy
+def generate_prophecy():
+    prompt = "You are an AI oracle. Give me a short mystical Web3 prophecy."
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "system", "content": prompt}]
+    )
+    return response["choices"][0]["message"]["content"]
+
+# Event: Bot is ready
+@client.event
+async def on_ready():
+    print(f'Logged in as {client.user.name}')
+    await auto_post_prophecies()
+
+# Event: Respond to user commands
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.lower() == "!prophecy":
+        prophecy = generate_prophecy()
+        await message.channel.send(f"🔮 {prophecy}")
+
+# Auto-post prophecies every few hours
+async def auto_post_prophecies():
+    await client.wait_until_ready()
+    channel_id = 123456789012345678  # Replace with your Discord channel ID
+    channel = client.get_channel(channel_id)
+
+    while not client.is_closed():
+        if channel:
+            prophecy = generate_prophecy()
+            await channel.send(f"🔮 {prophecy}")
+        await asyncio.sleep(14400)  # Every 4 hours
+
+# Run the bot
+client.run(TOKEN)

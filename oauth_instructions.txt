@@ -1,0 +1,44 @@
+To invite the Web3 Prophet Bot to your server:
+
+1. Go to https://discord.com/developers/applications
+2. Select your application (Goddess Oracle)
+3. Click on "OAuth2" in the left sidebar
+4. In the "Scopes" section, select:
+   - bot
+   - applications.commands
+
+5. In "Bot Permissions" select:
+   - Read Messages/View Channels
+   - Send Messages
+   - Embed Links
+   - Read Message History
+
+6. Copy the generated URL at the bottom of the scopes section
+7. Open this URL in a browser to invite the bot to your server
+
+After inviting the bot:
+1. Enable Developer Mode in Discord:
+   - Open Discord Settings
+   - Go to App Settings > Advanced
+   - Turn on Developer Mode
+
+2. Get the Channel ID:
+   - Right-click the channel where you want the bot to post prophecies
+   - Click "Copy Channel ID"
+   - Update your .env file with the correct DISCORD_CHANNEL_ID
+
+3. Verify Bot Permissions:
+   - Check that the bot's role in your server has these permissions:
+     * View Channels
+     * Send Messages
+     * Read Message History
+   - Make sure these permissions are enabled for the specific channel you want to use
+
+4. Enable Required Intents:
+   - Go back to https://discord.com/developers/applications
+   - Select your application
+   - Click on "Bot" in the left sidebar
+   - Under "Privileged Gateway Intents", enable:
+     * MESSAGE CONTENT INTENT
+     * SERVER MEMBERS INTENT
+     * PRESENCE INTENT

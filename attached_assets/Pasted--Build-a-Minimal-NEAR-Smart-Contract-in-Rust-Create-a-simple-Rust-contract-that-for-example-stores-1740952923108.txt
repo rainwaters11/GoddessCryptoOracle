@@ -1,0 +1,107 @@
+ Build a Minimal NEAR Smart Contract in Rust
+Create a simple Rust contract that, for example, stores the latest prophecy.
+
+Example Contract (lib.rs):
+
+rust
+Copy
+use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::{env, near_bindgen};
+
+#[near_bindgen]
+#[derive(Default, BorshDeserialize, BorshSerialize)]
+pub struct ProphecyContract {
+    pub last_prophecy: String,
+}
+
+#[near_bindgen]
+impl ProphecyContract {
+    pub fn store_prophecy(&mut self, prophecy: String) {
+        self.last_prophecy = prophecy;
+        env::log_str(&format!("Stored prophecy: {}", self.last_prophecy));
+    }
+    
+    pub fn get_prophecy(&self) -> String {
+        self.last_prophecy.clone()
+    }
+}
+Steps:
+
+Set Up: Follow the NEAR Rust contract quickstart to initialize your project.
+Build & Deploy: Compile your contract and deploy it on NEAR Testnet using NEAR CLI. For example:
+Install NEAR CLI: npm install -g near-cli
+Build your contract: cargo build --target wasm32-unknown-unknown --release
+Deploy using:
+bash
+Copy
+near deploy --accountId YOUR_TESTNET_ACCOUNT --wasmFile path/to/your_contract.wasm
+2. Integrate the Contract into Your Replit Discord Bot
+Use the near-api-js library to interact with your deployed contract from your Replit bot.
+
+Steps:
+
+Install near-api-js:
+In Replit, add near-api-js to your project (e.g., using npm install near-api-js).
+
+Configure near-api-js:
+
+Create a configuration file (or add the following in your bot’s code):
+
+javascript
+Copy
+const nearAPI = require('near-api-js');
+const { connect, keyStores, WalletConnection, Contract } = nearAPI;
+
+// Configuration for NEAR Testnet
+const config = {
+  networkId: 'default',
+  keyStore: new keyStores.InMemoryKeyStore(),
+  nodeUrl: 'https://rpc.testnet.near.org',
+  walletUrl: 'https://wallet.testnet.near.org',
+  helperUrl: 'https://helper.testnet.near.org',
+  explorerUrl: 'https://explorer.testnet.near.org',
+};
+
+async function initNear() {
+  const near = await connect(config);
+  const account = await near.account('YOUR_TESTNET_ACCOUNT'); // use your testnet account here
+  
+  // Create a contract instance
+  const contract = new Contract(account, 'YOUR_CONTRACT_ACCOUNT', {
+    viewMethods: ['get_prophecy'],
+    changeMethods: ['store_prophecy'],
+  });
+  return contract;
+}
+Modify Your Bot’s !prophecy Command:
+
+Update your bot’s command to call the contract method when a prophecy is issued. For example:
+
+javascript
+Copy
+// Example using Discord.js in your Replit bot
+const { Client, Intents } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+
+client.on('messageCreate', async (message) => {
+  if (message.content.startsWith('!prophecy')) {
+    // Generate your prophecy text
+    const prophecy = "In the dawn of the next cycle, a phoenix DAO shall rise...";
+    
+    // Initialize NEAR contract and store prophecy
+    const contract = await initNear();
+    try {
+      await contract.store_prophecy({ prophecy });
+      message.reply(`Prophecy stored on NEAR! Here’s your vision: ${prophecy}`);
+    } catch (error) {
+      console.error(error);
+      message.reply("Failed to store prophecy on NEAR.");
+    }
+  }
+});
+
+client.login('YOUR_DISCORD_BOT_TOKEN');
+3. Testing & Submission
+Test Consistency:
+Ensure your bot calls the NEAR contract correctly and the contract function runs consistently on NEAR Testnet.
+
