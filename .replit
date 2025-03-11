@@ -13,10 +13,6 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Web3 Prophet Bot"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
 args = "Test NEAR Integration"
 
 [[workflows.workflow.tasks]]
@@ -34,20 +30,6 @@ args = "Web Interface"
 [[workflows.workflow.tasks]]
 task = "workflow.run"
 args = "Discord Bot"
-
-[[workflows.workflow]]
-name = "Web3 Prophet Bot"
-author = "agent"
-
-[workflows.workflow.metadata]
-agentRequireRestartOnSave = false
-
-[[workflows.workflow.tasks]]
-task = "packager.installForAll"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
 
 [[workflows.workflow]]
 name = "Test NEAR Integration"
@@ -122,7 +104,7 @@ task = "shell.exec"
 args = "python main.py"
 
 [deployment]
-run = ["sh", "-c", "FORCE_LOCAL_STORAGE=true python main.py & python web_app.py"]
+run = ["sh", "-c", "FORCE_LOCAL_STORAGE=false python main.py & python web_app.py"]
 
 [[ports]]
 localPort = 5000

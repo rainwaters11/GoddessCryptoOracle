@@ -4,6 +4,12 @@ from config import DISCORD_CHANNEL_ID
 from prophecy_generator import ProphecyGenerator
 from logger import logger
 
+def channel_only():
+    """Check if command is used in the designated channel"""
+    async def predicate(ctx):
+        return ctx.channel.id == DISCORD_CHANNEL_ID
+    return commands.check(predicate)
+
 class ProphecyCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -12,16 +18,13 @@ class ProphecyCog(commands.Cog):
         logger.info("ProphecyCog initialized")
 
     @commands.command(name='prophecy', aliases=['prophcy', 'prophet', 'oracle'])
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    @channel_only()
     async def prophecy(self, ctx, theme: str = None):
         """Generate a mystical Web3 prophecy with optional theme"""
         try:
             logger.info(f"Processing prophecy request from {ctx.author} with theme: {theme}")
             logger.info(f"Channel ID: {ctx.channel.id}, Expected Channel ID: {DISCORD_CHANNEL_ID}")
-
-            # Only respond in the designated channel
-            if ctx.channel.id != DISCORD_CHANNEL_ID:
-                logger.warning(f"Command received in wrong channel. Got {ctx.channel.id}, expected {DISCORD_CHANNEL_ID}")
-                return
 
             # Send channeling message
             channeling_msg = await ctx.send("🔮 **Channeling the mystic forces of Web3...**")
@@ -51,9 +54,12 @@ class ProphecyCog(commands.Cog):
             await ctx.send("⚠️ The mystic forces are clouded. Please try again later.")
 
     @commands.command(name='insight')
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    @channel_only()
     async def insight(self, ctx):
         """Get deeper insight into the last prophecy"""
-        if ctx.channel.id != DISCORD_CHANNEL_ID or not self.last_prophecy_timestamp:
+        if not self.last_prophecy_timestamp:
+            await ctx.send("🔮 No recent prophecies to analyze. Request a prophecy first using `!prophecy`")
             return
 
         try:
@@ -78,21 +84,18 @@ class ProphecyCog(commands.Cog):
             logger.error(f"Error generating insight: {str(e)}")
             await ctx.send("⚠️ The mystic forces are unable to provide deeper insights at this time.")
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    @prophecy.error
+    @insight.error
+    async def command_error(self, ctx, error):
         """Handle command errors"""
-        # Log all errors for debugging
-        logger.error(f"Command error encountered: {error}")
-        logger.error(f"Command context: Channel: {ctx.channel.id}, Author: {ctx.author}, Message: {ctx.message.content}")
-
-        if isinstance(error, commands.CommandNotFound):
-            # Check if the message was in our channel
-            if ctx.channel.id == DISCORD_CHANNEL_ID:
-                await ctx.send("🔮 Did you mean `!prophecy`? Use `!prophecy` to receive a mystical vision, or try `!prophecy defi/nft/dao` for themed prophecies.")
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"🕐 The mystic forces need time to regenerate. Try again in {error.retry_after:.1f}s")
+        elif isinstance(error, commands.CheckFailure):
+            # Don't respond if command was used in wrong channel
+            return
         else:
-            logger.error(f"Unhandled command error: {str(error)}")
+            logger.error(f"Command error encountered: {error}")
             await ctx.send("⚠️ An error occurred while processing your request. Please try again.")
-
 
 class ProphetBot(commands.Bot):
     def __init__(self):
@@ -128,18 +131,4 @@ class ProphetBot(commands.Bot):
                 logger.error("Bot is missing required permissions in the channel!")
                 return
 
-            help_embed = discord.Embed(
-                title="🔮 Web3 Prophet Bot Commands",
-                description=(
-                    "**Available Commands:**\n"
-                    "`!prophecy` - Receive a mystical Web3 prophecy\n"
-                    "`!prophecy defi` - Get a DeFi-focused prophecy\n"
-                    "`!prophecy nft` - Get an NFT-focused prophecy\n"
-                    "`!prophecy dao` - Get a DAO-focused prophecy\n"
-                    "`!insight` - Get deeper insight into the last prophecy"
-                ),
-                color=0xff69b4
-            )
-            await channel.send(embed=help_embed)
-        else:
-            logger.error(f"Could not find channel with ID: {DISCORD_CHANNEL_ID}")
+            # Don't send help message on every restart
