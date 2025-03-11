@@ -29,10 +29,6 @@ args = "Web3 Prophet Bot & Interface"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Web Interface"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
 args = "Discord Bot"
 
 [[workflows.workflow]]
@@ -79,21 +75,6 @@ args = "cd prophecy-contract && cargo test"
 
 [[workflows.workflow]]
 name = "Web3 Prophet Bot & Interface"
-author = "agent"
-
-[workflows.workflow.metadata]
-agentRequireRestartOnSave = false
-
-[[workflows.workflow.tasks]]
-task = "packager.installForAll"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python web_app.py"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Web Interface"
 author = "agent"
 
 [workflows.workflow.metadata]

@@ -171,10 +171,21 @@ h1 {
 
 .instruction-card ol {
     margin-left: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .instruction-card li {
     margin-bottom: 1rem;
+}
+
+.instruction-card ul {
+    margin: 0.5rem 0 0.5rem 1.5rem;
+    list-style-type: none;
+}
+
+.instruction-card ul li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
 }
 
 code {
@@ -182,6 +193,7 @@ code {
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
     color: #ffffff;
+    font-family: monospace;
 }
 
 footer {

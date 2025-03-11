@@ -24,6 +24,26 @@ class ProphecyBot(commands.Bot):
         """Called when the bot is ready"""
         logger.info(f'Bot connected as {self.user}')
 
+        # Send help message to designated channel
+        channel = self.get_channel(DISCORD_CHANNEL_ID)
+        if channel:
+            logger.info(f"Found prophecy channel: #{channel.name}")
+            help_embed = discord.Embed(
+                title="🔮 Summon the Oracle",
+                description=(
+                    "**Available Commands:**\n"
+                    "`!prophecy` - Receive a mystical Web3 prophecy\n"
+                    "`!prophecy defi` - Get a DeFi-focused prophecy\n"
+                    "`!prophecy nft` - Get an NFT-focused prophecy\n"
+                    "`!prophecy dao` - Get a DAO-focused prophecy\n"
+                    "`!insight` - Get deeper insight into the last prophecy"
+                ),
+                color=0xff69b4
+            )
+            await channel.send(embed=help_embed)
+        else:
+            logger.error(f"Could not find channel with ID: {DISCORD_CHANNEL_ID}")
+
     @commands.command()
     async def prophecy(self, ctx, theme: str = None):
         """Generate a mystical Web3 prophecy"""

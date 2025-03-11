@@ -11,6 +11,12 @@ class ProphecyGenerator:
         self.model = "gpt-4"  # Using standard GPT-4 model
         self.near_handler = NEARHandler()
         self.context = {}  # Store prophecy context for follow-up questions
+        self.themes = {
+            'defi': 'Focus on decentralized finance, liquidity pools, yield farming, and financial protocols.',
+            'nft': 'Focus on NFTs, digital art, metaverse assets, and blockchain collectibles.',
+            'dao': 'Focus on decentralized governance, voting mechanisms, and community coordination.',
+            None: 'Provide a general Web3 prophecy about any aspect of the ecosystem.'
+        }
         logger.info("ProphecyGenerator initialized with local storage fallback")
 
     def _get_theme_prompt(self, theme=None):
@@ -22,14 +28,9 @@ class ProphecyGenerator:
             "Use metaphors, mystical language, and Web3 terminology."
         )
 
-        theme_prompts = {
-            "defi": base_prompt + " Focus on decentralized finance, liquidity pools, and yield farming.",
-            "nft": base_prompt + " Focus on NFTs, digital art, and blockchain-based collectibles.",
-            "dao": base_prompt + " Focus on decentralized governance, voting systems, and community coordination.",
-            "general": base_prompt + " Provide a general Web3 prophecy about any aspect of the ecosystem."
-        }
-
-        return theme_prompts.get(theme.lower(), theme_prompts["general"]) if theme else theme_prompts["general"]
+        if theme and theme.lower() in self.themes:
+            return f"{base_prompt} {self.themes[theme.lower()]}"
+        return f"{base_prompt} {self.themes[None]}"
 
     def generate_prophecy(self, theme=None):
         """Generate a mystic Web3 prophecy using OpenAI"""
@@ -85,13 +86,14 @@ class ProphecyGenerator:
 
             context = self.context[timestamp]
             prophecy = context['prophecy']
+            theme = context['theme']
 
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a mystical oracle providing deeper insights into previous prophecies. Explain the hidden meanings and implications while maintaining a mystical tone."
+                        "content": f"You are a mystical oracle providing deeper insights into previous prophecies. Explain the hidden meanings and implications while maintaining a mystical tone. {self.themes[theme] if theme else ''}"
                     },
                     {
                         "role": "user",
