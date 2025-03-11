@@ -799,7 +799,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "discord-py", specifier = ">=2.0.0" },
+    { name = "discord-py", specifier = ">=2.5.0" },
     { name = "flask", specifier = ">=3.1.0" },
     { name = "near-api-py", specifier = ">=0.1.0" },
     { name = "openai", specifier = ">=1.65.2" },
