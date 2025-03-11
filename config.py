@@ -9,7 +9,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Discord Configuration
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-DISCORD_CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID", "1345696402696704002"))
+DISCORD_CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID"))  # Now using the provided channel ID
 
 # NEAR Configuration
 NEAR_ACCOUNT = os.getenv("NEAR_ACCOUNT")
