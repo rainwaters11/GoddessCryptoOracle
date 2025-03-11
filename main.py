@@ -4,7 +4,6 @@ from logger import logger
 
 def main():
     try:
-        # Create and run the Discord bot
         bot = ProphetBot()
         logger.info("Starting Web3 Prophet Bot...")
         bot.run(DISCORD_TOKEN)
