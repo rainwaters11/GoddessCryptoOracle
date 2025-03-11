@@ -1,11 +1,11 @@
-from discord_handler import ProphetBot
+from discord_handler import ProphecyBot
 from config import DISCORD_TOKEN
 from logger import logger
 
 def main():
     try:
         # Create and run the Discord bot
-        bot = ProphetBot()
+        bot = ProphecyBot()
         logger.info("Starting Web3 Prophet Bot...")
         bot.run(DISCORD_TOKEN)
     except Exception as e:
