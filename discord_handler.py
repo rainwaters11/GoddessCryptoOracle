@@ -93,21 +93,6 @@ class ProphecyCog(commands.Cog):
             logger.error(f"Unhandled command error: {str(error)}")
             await ctx.send("⚠️ An error occurred while processing your request. Please try again.")
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        """Called when a message is received"""
-        if message.author == self.bot.user:
-            return
-
-        # Log message details for debugging
-        logger.info(f"Received message: '{message.content}' in channel {message.channel.id} "
-                   f"from {message.author}")
-
-        # Check if message is in the correct channel
-        if message.channel.id == DISCORD_CHANNEL_ID:
-            logger.info("Message received in prophecy channel")
-            await self.bot.process_commands(message)
-
 
 class ProphetBot(commands.Bot):
     def __init__(self):
@@ -116,7 +101,6 @@ class ProphetBot(commands.Bot):
         intents.guilds = True
         intents.guild_messages = True
         super().__init__(command_prefix='!', intents=intents)
-
         logger.info("ProphetBot initialized")
 
     async def setup_hook(self):
