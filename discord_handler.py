@@ -6,25 +6,39 @@ from logger import logger
 
 class ProphecyBot(commands.Bot):
     def __init__(self):
-        # Initialize with only message content intent
-        intents = discord.Intents.none()
+        # Enable required intents
+        intents = discord.Intents.default()
         intents.message_content = True
         intents.guilds = True
 
         super().__init__(
             command_prefix='!',
             intents=intents,
-            description="Web3 Prophet Bot"
+            help_command=None  # Disable default help command
         )
 
         self.prophecy_generator = ProphecyGenerator()
         self.last_prophecy_timestamp = None
 
+        # Add commands
+        self.add_command(self.prophecy)
+        self.add_command(self.insight)
+
+    async def setup_hook(self):
+        """Called when the bot is setting up"""
+        logger.info("ProphecyBot setup complete")
+
     async def on_ready(self):
         """Called when the bot is ready"""
         logger.info(f'Bot connected as {self.user}')
+        logger.info(f'Connected to {len(self.guilds)} guilds')
 
-    @commands.command()
+        for guild in self.guilds:
+            logger.info(f"Connected to guild: {guild.name}")
+            for channel in guild.text_channels:
+                logger.info(f"Found channel: {channel.name} (ID: {channel.id})")
+
+    @commands.command(name='prophecy')
     async def prophecy(self, ctx, theme: str = None):
         """Generate a mystical Web3 prophecy"""
         if ctx.channel.id != DISCORD_CHANNEL_ID:
@@ -35,7 +49,7 @@ class ProphecyBot(commands.Bot):
             self.last_prophecy_timestamp = timestamp
 
             embed = discord.Embed(
-                title=f"🔮 Web3 Prophecy {theme.upper() if theme else ''} 🔮",
+                title="🔮 Web3 Prophecy",
                 description=prophecy,
                 color=0xff69b4
             )
@@ -46,7 +60,7 @@ class ProphecyBot(commands.Bot):
             logger.error(f"Error generating prophecy: {str(e)}")
             await ctx.send("⚠️ The mystic forces are clouded. Please try again later.")
 
-    @commands.command()
+    @commands.command(name='insight')
     async def insight(self, ctx):
         """Get deeper insight into the last prophecy"""
         if ctx.channel.id != DISCORD_CHANNEL_ID:
@@ -59,7 +73,7 @@ class ProphecyBot(commands.Bot):
         try:
             insight = self.prophecy_generator.get_insight(self.last_prophecy_timestamp)
             embed = discord.Embed(
-                title="✨ Mystical Insight ✨",
+                title="✨ Mystical Insight",
                 description=insight,
                 color=0x4a90e2
             )

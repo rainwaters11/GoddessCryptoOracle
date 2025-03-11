@@ -9,7 +9,8 @@ def main():
         logger.info("Starting Web3 Prophet Bot...")
         bot.run(DISCORD_TOKEN)
     except Exception as e:
-        logger.error(f"Critical error in main loop: {str(e)}")
+        logger.error(f"Critical error starting bot: {str(e)}")
+        logger.exception("Full traceback:")
         raise
 
 if __name__ == "__main__":
