@@ -6,10 +6,13 @@ from logger import logger
 
 class ProphecyBot(commands.Bot):
     def __init__(self):
-        # Initialize with only message content intent
-        intents = discord.Intents.none()
+        # Enable ALL required intents explicitly
+        intents = discord.Intents.default()
         intents.message_content = True
         intents.guilds = True
+        intents.guild_messages = True
+        intents.messages = True
+        intents.dm_messages = True
 
         super().__init__(
             command_prefix='!',
@@ -19,6 +22,12 @@ class ProphecyBot(commands.Bot):
 
         self.prophecy_generator = ProphecyGenerator()
         self.last_prophecy_timestamp = None
+        logger.info("ProphecyBot initialized with all required intents")
+
+        # Register commands
+        self.remove_command('help')  # Remove default help command
+        self.add_command(self.prophecy)
+        self.add_command(self.insight)
 
     async def on_ready(self):
         """Called when the bot is ready"""
@@ -44,10 +53,24 @@ class ProphecyBot(commands.Bot):
         else:
             logger.error(f"Could not find channel with ID: {DISCORD_CHANNEL_ID}")
 
-    @commands.command()
+    async def on_message(self, message):
+        """Handle incoming messages"""
+        if message.author == self.user:
+            return
+
+        # Log all message attempts
+        logger.info(f"Message received: {message.content} from {message.author} in channel {message.channel.id}")
+
+        # Process commands after logging
+        await self.process_commands(message)
+
+    @commands.command(name="prophecy")
     async def prophecy(self, ctx, theme: str = None):
         """Generate a mystical Web3 prophecy"""
+        logger.info(f"Prophecy command received from {ctx.author} with theme: {theme}")
+
         if ctx.channel.id != DISCORD_CHANNEL_ID:
+            logger.info(f"Ignoring prophecy command in non-prophecy channel {ctx.channel.id}")
             return
 
         try:
@@ -66,10 +89,13 @@ class ProphecyBot(commands.Bot):
             logger.error(f"Error generating prophecy: {str(e)}")
             await ctx.send("⚠️ The mystic forces are clouded. Please try again later.")
 
-    @commands.command()
+    @commands.command(name="insight")
     async def insight(self, ctx):
         """Get deeper insight into the last prophecy"""
+        logger.info(f"Insight command received from {ctx.author}")
+
         if ctx.channel.id != DISCORD_CHANNEL_ID:
+            logger.info(f"Ignoring insight command in non-prophecy channel {ctx.channel.id}")
             return
 
         if not self.last_prophecy_timestamp:
