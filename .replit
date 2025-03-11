@@ -31,6 +31,10 @@ args = "Web3 Prophet Bot & Interface"
 task = "workflow.run"
 args = "Discord Bot"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Web Interface"
+
 [[workflows.workflow]]
 name = "Web3 Prophet Bot"
 author = "agent"
@@ -101,6 +105,21 @@ task = "packager.installForAll"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
+
+[[workflows.workflow]]
+name = "Web Interface"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python web_app.py"
+waitForPort = 5000
 
 [deployment]
 run = ["sh", "-c", "FORCE_LOCAL_STORAGE=true python main.py & python web_app.py"]

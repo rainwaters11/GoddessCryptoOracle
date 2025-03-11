@@ -46,4 +46,4 @@ if __name__ == '__main__':
         shutil.copy('attached_assets/goddessbot.jpg', 'static/goddessbot.jpg')
 
     # Run the Flask app
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
